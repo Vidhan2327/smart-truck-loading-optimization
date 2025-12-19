@@ -94,31 +94,13 @@ Shipment–truck matching and optimization logic
 
 Deployment setup (Render / Railway)
 
-📁 Project Structure
-Flipr_Hackathon/
-├── Backend/
-│   ├── App.js
-│   ├── Server.js
-│   ├── Controllers/
-│   ├── Routes/
-│   ├── Models/
-│   └── Middleware/
-│
-├── Frontend/
-│   ├── src/
-│   │   ├── Pages/
-│   │   ├── Services/
-│   │   ├── App.jsx
-│   │   └── main.jsx
-│
-└── README.md
 
 ⚙️ Local Setup Instructions
-1️⃣ Clone the Repository
+1️ Clone the Repository
 git clone <repository-url>
 cd Flipr_Hackathon
 
-2️⃣ Backend Setup
+2️ Backend Setup
 cd Backend
 npm install
 
