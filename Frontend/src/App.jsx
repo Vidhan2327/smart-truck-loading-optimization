@@ -1,10 +1,22 @@
+import React from "react";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Intro from "./Pages/Intro"
+import Login from "./Pages/Login";
+import Register from "./Pages/Register";
+import WarehouseDashboard from "./Pages/WarehouseDashboard";
+import DealerDashboard from "./Pages/DealerDashboard";
+
 function App() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <h1 className="text-4xl font-bold text-gray-800">
-        Smart Truck Loading Optimization System
-      </h1>
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Intro />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/warehouse/dashboard" element={<WarehouseDashboard />} />
+        <Route path="/dealer/dashboard" element={<DealerDashboard />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 
