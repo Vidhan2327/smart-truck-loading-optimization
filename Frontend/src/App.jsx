@@ -5,9 +5,12 @@ import Login from "./Pages/Login";
 import Register from "./Pages/Register";
 import WarehouseDashboard from "./Pages/WarehouseDashboard";
 import DealerDashboard from "./Pages/DealerDashboard";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function App() {
-  return (
+  return (<>
+    <ToastContainer position="top-right" autoClose={3000} hideProgressBar={false} newestOnTop closeOnClick pauseOnHover draggable theme="light" />
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Intro />} />
@@ -17,6 +20,7 @@ function App() {
         <Route path="/dealer/dashboard" element={<DealerDashboard />} />
       </Routes>
     </BrowserRouter>
+  </>
   );
 }
 
