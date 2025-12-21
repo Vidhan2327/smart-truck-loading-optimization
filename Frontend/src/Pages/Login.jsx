@@ -17,6 +17,7 @@ export default function Login() {
     try {
       const res = await loginUser({ email, password });
       const role = res.data.user.role;
+      console.log("ROLE:", role);
 
       toast.success("Login successful 🎉");
 
