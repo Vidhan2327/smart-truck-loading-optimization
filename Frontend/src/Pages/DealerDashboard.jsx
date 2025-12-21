@@ -99,152 +99,217 @@ const DealerDashboard = () => {
   };
 
   return (
-    <div className="p-6 max-w-6xl mx-auto">
-      <div className="flex justify-between mb-6">
-        <h1 className="text-2xl font-bold">Dealer Dashboard</h1>
-        <button
-          onClick={handleLogout}
-          className="bg-red-600 text-white px-4 py-2 rounded"
-        >
-          Logout
-        </button>
-      </div>
+    <div className="min-h-screen w-full 
+  bg-gradient-to-br from-orange-100 via-yellow-50 to-orange-50">
 
-      <h2 className="text-xl font-semibold mb-4">Incoming Shipment Requests</h2>
+      <div className="p-6 max-w-6xl mx-auto">
 
-      {loading && <p className="text-sm text-gray-500">Loading...</p>}
-
-      {!loading && requests.length === 0 && (
-        <p className="text-sm text-gray-500">No incoming requests</p>
-      )}
-
-      {requests.map((s) => (
-        <div key={s._id} className="border p-4 rounded mb-3">
-          <p className="font-semibold">
-            {s.pickupLocation} → {s.destination}
-          </p>
+        {/* Header */}
+        <div className="flex justify-between items-center mb-10">
+          <h1 className="text-3xl font-extrabold text-orange-700">
+            Dealer Dashboard
+          </h1>
 
           <button
-            disabled={acceptingId === s._id}
-            onClick={() => handleAccept(s._id)}
-            className="mt-2 bg-green-600 text-white px-4 py-1 rounded disabled:opacity-50"
+            onClick={handleLogout}
+            className="bg-orange-500 hover:bg-orange-600 
+          text-white px-5 py-2 rounded-xl transition shadow"
           >
-            {acceptingId === s._id ? "Accepting..." : "Accept"}
+            Logout
           </button>
         </div>
-      ))}
 
-      <h2 className="text-xl font-semibold mt-10 mb-4">Add Truck</h2>
+        {/* Incoming Requests */}
+        <h2 className="text-2xl font-bold mb-6 text-orange-700">
+          Incoming Shipment Requests
+        </h2>
 
-      <form onSubmit={handleSubmit} className="border p-4 rounded">
-        <select
-          required
-          value={formData.type}
-          onChange={(e) => setFormData({ ...formData, type: e.target.value })}
-          className="border p-2 rounded w-full mb-2"
+        {loading && (
+          <p className="text-sm text-gray-500">Loading...</p>
+        )}
+
+        {!loading && requests.length === 0 && (
+          <div className="bg-white rounded-xl p-6 shadow border border-orange-100">
+            <p className="text-gray-500">No incoming requests</p>
+          </div>
+        )}
+
+        {requests.map((s) => (
+          <div
+            key={s._id}
+            className="bg-white rounded-2xl p-6 mb-5
+          shadow-lg border border-orange-100
+          hover:shadow-xl transition"
+          >
+            <div className="flex justify-between items-center">
+              <div>
+                <p className="text-lg font-bold text-gray-800">
+                  {s.pickupLocation} → {s.destination}
+                </p>
+                <p className="text-sm text-gray-500">
+                  Shipment ID: {s._id.slice(-6)}
+                </p>
+              </div>
+
+              <button
+                disabled={acceptingId === s._id}
+                onClick={() => handleAccept(s._id)}
+                className="bg-green-600 hover:bg-green-700
+              text-white px-5 py-2 rounded-lg transition
+              disabled:opacity-50"
+              >
+                {acceptingId === s._id ? "Accepting..." : "Accept"}
+              </button>
+            </div>
+          </div>
+        ))}
+
+        {/* Add Truck */}
+        <h2 className="text-2xl font-bold mt-14 mb-6 text-orange-700">
+          Add Truck
+        </h2>
+
+        <form
+          onSubmit={handleSubmit}
+          className="bg-white rounded-2xl p-6 shadow-xl
+        border border-orange-100"
         >
-          <option value="">Truck Type</option>
-          <option value="Mini">Mini (≤1000kg)</option>
-          <option value="Medium">Medium (1–5 ton)</option>
-          <option value="Heavy">Heavy (&gt;5 ton)</option>
-        </select>
-
-        <input
-          type="number"
-          placeholder="Capacity (kg)"
-          required
-          className="border p-2 rounded w-full mb-2"
-          onChange={(e) =>
-            setFormData({ ...formData, capacity: e.target.value })
-          }
-        />
-
-        <input
-          type="number"
-          placeholder="Volume (m³)"
-          required
-          className="border p-2 rounded w-full mb-2"
-          onChange={(e) => setFormData({ ...formData, volume: e.target.value })}
-        />
-
-        <select
-          required
-          value={formData.currentCity}
-          onChange={(e) =>
-            setFormData({ ...formData, currentCity: e.target.value })
-          }
-          className="border p-2 rounded w-full mb-2"
-        >
-          <option value="">Current City</option>
-          {CITIES.map((c) => (
-            <option key={c}>{c}</option>
-          ))}
-        </select>
-
-        <h3 className="font-semibold mt-4 mb-2">Routes & Cost / km</h3>
-
-        {routes.map((r, i) => (
-          <div key={i} className="grid grid-cols-3 gap-2 mb-2">
+          <div className="grid grid-cols-2 gap-4">
             <select
               required
-              className="border p-2 rounded"
-              onChange={(e) => {
-                const copy = [...routes];
-                copy[i].pickupLocation = e.target.value;
-                setRoutes(copy);
-              }}
+              value={formData.type}
+              onChange={(e) =>
+                setFormData({ ...formData, type: e.target.value })
+              }
+              className="border p-3 rounded-lg focus:ring-2 focus:ring-orange-400"
             >
-              <option value="">Pickup</option>
-              {CITIES.map((c) => (
-                <option key={c}>{c}</option>
-              ))}
-            </select>
-
-            <select
-              required
-              className="border p-2 rounded"
-              onChange={(e) => {
-                const copy = [...routes];
-                copy[i].destination = e.target.value;
-                setRoutes(copy);
-              }}
-            >
-              <option value="">Destination</option>
-              {CITIES.map((c) => (
-                <option key={c}>{c}</option>
-              ))}
+              <option value="">Truck Type</option>
+              <option value="Mini">Mini (≤1000kg)</option>
+              <option value="Medium">Medium (1–5 ton)</option>
+              <option value="Heavy">Heavy (&gt;5 ton)</option>
             </select>
 
             <input
               type="number"
-              placeholder="₹ / km"
+              placeholder="Capacity (kg)"
               required
-              className="border p-2 rounded"
-              onChange={(e) => {
-                const copy = [...routes];
-                copy[i].costPerKm = e.target.value;
-                setRoutes(copy);
-              }}
+              className="border p-3 rounded-lg focus:ring-2 focus:ring-orange-400"
+              onChange={(e) =>
+                setFormData({ ...formData, capacity: e.target.value })
+              }
             />
+
+            <input
+              type="number"
+              placeholder="Volume (m³)"
+              required
+              className="border p-3 rounded-lg focus:ring-2 focus:ring-orange-400"
+              onChange={(e) =>
+                setFormData({ ...formData, volume: e.target.value })
+              }
+            />
+
+            <select
+              required
+              value={formData.currentCity}
+              onChange={(e) =>
+                setFormData({ ...formData, currentCity: e.target.value })
+              }
+              className="border p-3 rounded-lg focus:ring-2 focus:ring-orange-400"
+            >
+              <option value="">Current City</option>
+              {CITIES.map((c) => (
+                <option key={c}>{c}</option>
+              ))}
+            </select>
+          </div>
+
+          {/* Routes */}
+          <h3 className="font-semibold mt-6 mb-3 text-gray-700">
+            Routes & Cost per km
+          </h3>
+
+          {routes.map((r, i) => (
+            <div key={i} className="grid grid-cols-3 gap-3 mb-3">
+              <select
+                required
+                className="border p-3 rounded-lg"
+                onChange={(e) => {
+                  const copy = [...routes];
+                  copy[i].pickupLocation = e.target.value;
+                  setRoutes(copy);
+                }}
+              >
+                <option value="">Pickup</option>
+                {CITIES.map((c) => (
+                  <option key={c}>{c}</option>
+                ))}
+              </select>
+
+              <select
+                required
+                className="border p-3 rounded-lg"
+                onChange={(e) => {
+                  const copy = [...routes];
+                  copy[i].destination = e.target.value;
+                  setRoutes(copy);
+                }}
+              >
+                <option value="">Destination</option>
+                {CITIES.map((c) => (
+                  <option key={c}>{c}</option>
+                ))}
+              </select>
+
+              <input
+                type="number"
+                placeholder="₹ / km"
+                required
+                className="border p-3 rounded-lg"
+                onChange={(e) => {
+                  const copy = [...routes];
+                  copy[i].costPerKm = e.target.value;
+                  setRoutes(copy);
+                }}
+              />
+            </div>
+          ))}
+
+          <button
+            type="submit"
+            disabled={loading}
+            className="mt-6 bg-orange-500 hover:bg-orange-600
+          text-white px-6 py-3 rounded-xl transition shadow
+          disabled:opacity-50"
+          >
+            Add Truck
+          </button>
+        </form>
+
+        {/* My Trucks */}
+        <h2 className="text-2xl font-bold mt-14 mb-6 text-orange-700">
+          My Trucks
+        </h2>
+
+        {trucks.map((t) => (
+          <div
+            key={t._id}
+            className="bg-white rounded-xl p-4 mb-4
+          shadow border border-orange-100"
+          >
+            <p className="font-semibold text-gray-800">
+              {t.type} Truck
+            </p>
+            <p className="text-sm text-gray-600">
+              City: {t.currentCity} | Status: {t.status}
+            </p>
+            <p className="text-sm text-gray-600">
+              Trips Completed: {t.tripsCompleted}
+            </p>
           </div>
         ))}
 
-        <button
-          type="submit"
-          disabled={loading}
-          className="mt-4 bg-black text-white px-4 py-2 rounded disabled:opacity-50"
-        >
-          Add Truck
-        </button>
-      </form>
-
-      <h2 className="text-xl font-semibold mt-10 mb-4">My Trucks</h2>
-
-      {trucks.map((t) => (
-        <div key={t._id} className="border p-3 rounded mb-2">
-          {t.type} | {t.currentCity} | {t.status} | Trips: {t.tripsCompleted}
-        </div>
-      ))}
+      </div>
     </div>
   );
 };
