@@ -1,3 +1,5 @@
+Backend Deployed link - https://smart-truck-loading-optimization-3.onrender.com/ (first run it once !! )
+Frontend Deployed link - https://smart-truck-loading-dp9l.onrender.com/
 🚚 Smart Truck Loading & Optimization System
 
 A time-based and capacity-aware logistics optimization platform that intelligently batches shipments into trucks based on route, time window, capacity, and volume, ensuring maximum utilization and minimal trips.
