@@ -1,14 +1,22 @@
-Backend Deployed link - https://smart-truck-loading-optimization-3.onrender.com/ (first run it once !! )
-Frontend Deployed link - https://smart-truck-loading-dp9l.onrender.com/
 🚚 Smart Truck Loading & Optimization System
 
-A time-based and capacity-aware logistics optimization platform that intelligently batches shipments into trucks based on route, time window, capacity, and volume, ensuring maximum utilization and minimal trips.
+A time-based, capacity-aware logistics optimization platform that intelligently batches shipments into trucks based on route, time window, weight, and volume—ensuring maximum utilization and minimum trips.
 
-Built for hackathon use with clear business logic, scalability, and real-world constraints.
+Built for real-world logistics constraints, scalability, and hackathon-grade clarity.
+
+🔗 Live Deployments
+
+Backend (Render)
+https://smart-truck-loading-optimization-3.onrender.com/
+
+⚠️ Please open once to wake the server (cold start)
+
+Frontend (Render)
+https://smart-truck-loading-dp9l.onrender.com/
 
 📌 Problem Statement
 
-Traditional logistics systems often assign one truck per shipment, which leads to:
+Traditional logistics systems often assign one truck per shipment, leading to:
 
 Low truck utilization
 
@@ -20,22 +28,22 @@ Inefficient dispatch cycles
 
 This project solves the problem by batching multiple shipments into a single truck using:
 
-Time-based windows
+Time-based batching windows
 
 Capacity & volume constraints
 
 Route matching
 
-Automated dispatch & reuse
+Automated dispatch and reuse
 
 🚀 Key Features
 ✅ Time-Based Truck Batching
 
-Shipments are collected for a 15-minute batching window
+Shipments are collected within a 15-minute batching window
 
-After batching, the truck is dispatched automatically
+After the window expires, the truck is automatically dispatched
 
-Travel is simulated for another 15 minutes
+Travel is simulated for 15 minutes
 
 Truck becomes reusable after completion
 
@@ -43,27 +51,35 @@ Truck becomes reusable after completion
 
 Each truck has:
 
-capacity (kg)
+Capacity (kg)
 
-volume (m³)
+Volume (m³)
 
-Each shipment consumes capacity & volume
+Each shipment consumes both:
 
-A truck stops accepting shipments once full
+Weight
 
-Prevents overloading automatically
+Volume
+
+The system:
+
+Prevents overloading
+
+Stops accepting shipments once limits are reached
+
+Ensures realistic constraints
 
 ✅ Multi-Shipment per Truck
 
 One truck can carry multiple shipments
 
-All shipments:
+All shipments must:
 
 Share the same route
 
-Fit within capacity & volume
+Fit within remaining capacity & volume
 
-Are accepted within the time window
+Be accepted within the batching window
 
 Only one trip is counted per dispatch
 
@@ -71,9 +87,11 @@ Only one trip is counted per dispatch
 
 After delivery:
 
-Truck capacity & volume reset
+All shipments are marked Delivered
 
-Truck becomes available again
+Truck capacity & volume are reset
+
+Truck becomes Available
 
 tripsCompleted increments correctly
 
@@ -83,7 +101,7 @@ Warehouse
 
 Creates shipments
 
-Requests optimized trucks
+Requests optimized truck allocation
 
 Dealer
 
@@ -91,14 +109,18 @@ Adds trucks
 
 Accepts shipment requests
 
-System (Cron)
+System (Cron Jobs)
 
-Handles dispatch & completion automatically
+Handles automatic dispatch
 
-🧠 How the Optimization Works
+Handles delivery completion
+
+Manages truck reuse
+
+🧠 Optimization Logic (How It Works)
 1️⃣ Shipment Acceptance
 
-Shipment is matched to trucks by:
+A shipment is matched with a truck based on:
 
 Route
 
@@ -112,21 +134,21 @@ Capacity & volume are deducted
 
 Truck enters batching window
 
-2️⃣ Dispatch (Automated)
+2️⃣ Automated Dispatch
 
-Every minute, a cron job checks:
+A cron job runs every minute and checks:
 
-Trucks ready to dispatch (batching window expired)
+Trucks whose batching window has expired
 
-Truck status changes:
+Truck state changes:
 
-Available → En route
+Available → En Route
 
 3️⃣ Completion & Reuse
 
-After travel time:
+After simulated travel time:
 
-All shipments marked Delivered
+All shipments → Delivered
 
 Truck resets:
 
@@ -140,9 +162,9 @@ tripsCompleted += 1
 
 ⏱️ Timing Model
 Phase	Duration
-Shipment batching	15 minutes
-Travel time	15 minutes
-Total cycle	~30 minutes
+Shipment batching	15 min
+Travel time	15 min
+Total cycle	~30 min
 🏗️ Tech Stack
 Backend
 
@@ -166,7 +188,7 @@ Tailwind CSS
 
 React Router
 
-Toast notifications
+Toast Notifications
 
 📂 Core Data Models
 Truck
@@ -177,9 +199,9 @@ Volume (m³)
 
 Remaining capacity & volume
 
-Routes
+Route
 
-Status (Available / En route)
+Status (Available / En Route)
 
 Trips completed
 
@@ -195,13 +217,13 @@ Linked truck
 
 🧪 Example Scenario
 
-Truck:
+Truck
 
 Capacity: 1000 kg
 
 Volume: 10 m³
 
-Shipments:
+Shipments
 
 Shipment A: 400 kg / 4 m³
 
@@ -209,11 +231,11 @@ Shipment B: 500 kg / 5 m³
 
 Shipment C: 300 kg / 3 m³
 
-Result:
+Result
 
-A + B accepted
+Shipment A + B → Accepted
 
-C rejected (capacity exceeded)
+Shipment C → Rejected (capacity exceeded)
 
 One trip completed
 
@@ -225,17 +247,48 @@ Maximizes truck utilization
 
 Reduces number of trips
 
+Lowers operational and environmental costs
+
 Scales naturally with demand
 
-Mirrors real-world logistics constraints
+Mirrors real-world logistics workflows
 
-Clean separation of concerns (Warehouse, Dealer, System)
+Clean separation of concerns:
+
+Warehouse
+
+Dealer
+
+System automation
 
 🏁 Conclusion
 
-This system demonstrates how time-window batching combined with capacity & volume constraints can significantly improve logistics efficiency.
-It is production-logical, hackathon-ready, and easy to extend (CO₂ tracking, pricing optimization, AI routing).
+This project demonstrates how time-window batching combined with capacity & volume constraints can significantly improve logistics efficiency.
+
+It is:
+
+Production-logical
+
+Hackathon-ready
+
+Scalable and extensible
+
+Future extensions include:
+
+CO₂ emission tracking
+
+Dynamic pricing
+
+AI-based route optimization
 
 🏁 Hackathon Context
 
-This project is being built specifically for the Flipr Hackathon, following clean architecture, scalable design, and production-ready practices.
+Built specifically for the Flipr Hackathon, following:
+
+Clean architecture
+
+Scalable backend design
+
+Real-world business logic
+
+Production-ready practices
