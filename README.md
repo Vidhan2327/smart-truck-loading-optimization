@@ -1,162 +1,238 @@
-LoadSmart – Smart Truck Loading Optimization System
+🚚 Smart Truck Loading & Optimization System
 
-Flipr Hackathon Project
- Overview
+A time-based and capacity-aware logistics optimization platform that intelligently batches shipments into trucks based on route, time window, capacity, and volume, ensuring maximum utilization and minimal trips.
 
-LoadSmart is a full-stack logistics platform designed to streamline the interaction between warehouses and truck dealers.
-The system enables secure registration, role-based access, and sets the foundation for intelligent shipment-to-truck matching and optimization.
+Built for hackathon use with clear business logic, scalability, and real-world constraints.
 
-This project is being developed as part of the Flipr Hackathon.
+📌 Problem Statement
 
-🎯 Problem Statement
+Traditional logistics systems often assign one truck per shipment, which leads to:
 
-In logistics operations, warehouses often struggle to efficiently allocate shipments to available trucks, while truck dealers lack a centralized system to manage and expose their fleet.
+Low truck utilization
 
-LoadSmart aims to:
+Higher operational costs
 
-Digitize warehouse and dealer onboarding
+Increased carbon emissions
 
-Provide role-based dashboards
+Inefficient dispatch cycles
 
-Enable future optimization of shipment loading and truck utilization
+This project solves the problem by batching multiple shipments into a single truck using:
 
-🧱 Tech Stack
-Frontend
+Time-based windows
 
-React (Vite)
+Capacity & volume constraints
 
-Tailwind CSS
+Route matching
 
-React Router DOM
+Automated dispatch & reuse
 
-Axios
+🚀 Key Features
+✅ Time-Based Truck Batching
 
+Shipments are collected for a 15-minute batching window
+
+After batching, the truck is dispatched automatically
+
+Travel is simulated for another 15 minutes
+
+Truck becomes reusable after completion
+
+✅ Capacity & Volume Optimization
+
+Each truck has:
+
+capacity (kg)
+
+volume (m³)
+
+Each shipment consumes capacity & volume
+
+A truck stops accepting shipments once full
+
+Prevents overloading automatically
+
+✅ Multi-Shipment per Truck
+
+One truck can carry multiple shipments
+
+All shipments:
+
+Share the same route
+
+Fit within capacity & volume
+
+Are accepted within the time window
+
+Only one trip is counted per dispatch
+
+✅ Automatic Reuse & Trip Tracking
+
+After delivery:
+
+Truck capacity & volume reset
+
+Truck becomes available again
+
+tripsCompleted increments correctly
+
+✅ Role-Based System
+
+Warehouse
+
+Creates shipments
+
+Requests optimized trucks
+
+Dealer
+
+Adds trucks
+
+Accepts shipment requests
+
+System (Cron)
+
+Handles dispatch & completion automatically
+
+🧠 How the Optimization Works
+1️⃣ Shipment Acceptance
+
+Shipment is matched to trucks by:
+
+Route
+
+Remaining capacity
+
+Remaining volume
+
+On acceptance:
+
+Capacity & volume are deducted
+
+Truck enters batching window
+
+2️⃣ Dispatch (Automated)
+
+Every minute, a cron job checks:
+
+Trucks ready to dispatch (batching window expired)
+
+Truck status changes:
+
+Available → En route
+
+3️⃣ Completion & Reuse
+
+After travel time:
+
+All shipments marked Delivered
+
+Truck resets:
+
+Capacity
+
+Volume
+
+Availability
+
+tripsCompleted += 1
+
+⏱️ Timing Model
+Phase	Duration
+Shipment batching	15 minutes
+Travel time	15 minutes
+Total cycle	~30 minutes
+🏗️ Tech Stack
 Backend
 
 Node.js
 
 Express.js
 
-MongoDB Atlas
+MongoDB (Mongoose)
 
-JWT Authentication (httpOnly cookies)
+JWT Authentication
 
-✅ Features Implemented (Current)
-Authentication & Authorization
-
-User registration
-
-User login & logout
-
-JWT-based authentication using httpOnly cookies
-
-Role-based access control:
-
-Warehouse
-
-Dealer
+Node-Cron
 
 Frontend
 
-Intro / landing page
+React
 
-Login page
+Axios
 
-Register page with role selection
+Tailwind CSS
 
-Role-specific dashboards (placeholder UI)
+React Router
 
-Axios-based auth service with credentials enabled
+Toast notifications
 
-Backend
+📂 Core Data Models
+Truck
 
-Secure auth APIs
+Capacity (kg)
 
-Password hashing
+Volume (m³)
 
-Auth middleware extracting userId and role
+Remaining capacity & volume
 
-Clean app/server separation
+Routes
 
-Stable local development setup
+Status (Available / En route)
 
-🚧 Features In Progress / Planned
+Trips completed
 
-Warehouse onboarding (company, location, manager details)
+Shipment
 
-Dealer onboarding (truck types, service areas)
+Weight & volume
 
-Shipment management
+Pickup & destination
 
-Truck management
+Status lifecycle
 
-Shipment–truck matching and optimization logic
+Linked truck
 
-Deployment setup (Render / Railway)
+🧪 Example Scenario
 
+Truck:
 
-⚙️ Local Setup Instructions
-1️ Clone the Repository
-git clone <repository-url>
-cd Flipr_Hackathon
+Capacity: 1000 kg
 
-2️ Backend Setup
-cd Backend
-npm install
+Volume: 10 m³
 
+Shipments:
 
-Create a .env file inside Backend/:
+Shipment A: 400 kg / 4 m³
 
-MONGO_URI=your_mongodb_atlas_uri
-JWT_SECRET=your_secret_key
+Shipment B: 500 kg / 5 m³
 
+Shipment C: 300 kg / 3 m³
 
-Start backend server:
+Result:
 
-npm run dev
-# or
-node Server.js
+A + B accepted
 
+C rejected (capacity exceeded)
 
-Backend runs on:
+One trip completed
 
-http://127.0.0.1:5000
+Truck reused after delivery
 
-3️⃣ Frontend Setup
-cd ../Frontend
-npm install
-npm run dev
+🎯 Why This Solution Is Effective
 
+Maximizes truck utilization
 
-Frontend runs on:
+Reduces number of trips
 
-http://localhost:5173
+Scales naturally with demand
 
-🔐 Authentication Notes
+Mirrors real-world logistics constraints
 
-JWT is stored in httpOnly cookies
+Clean separation of concerns (Warehouse, Dealer, System)
 
-withCredentials: true is enabled in Axios
+🏁 Conclusion
 
-Local development uses 127.0.0.1 to avoid Node.js IPv6 issues on Windows
-
-Production deployment will switch host binding to 0.0.0.0
-
-👥 Team Collaboration
-
-Code is managed via GitHub
-
-.env files are intentionally excluded
-
-Teammates should create their own .env locally
-
-Branching and collaboration supported via Git
-
-📌 Project Status
-
-🚧 In Progress
-Core authentication and structure completed.
-Domain models, onboarding flows, and optimization logic coming next.
+This system demonstrates how time-window batching combined with capacity & volume constraints can significantly improve logistics efficiency.
+It is production-logical, hackathon-ready, and easy to extend (CO₂ tracking, pricing optimization, AI routing).
 
 🏁 Hackathon Context
 
