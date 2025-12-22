@@ -73,7 +73,7 @@ const DealerDashboard = () => {
     try {
       setLoading(true);
       await addTruck({ ...formData, routes });
-      await fetchData(); // 🔁 sync after mutation
+      await fetchData(); 
     } catch (err) {
       console.error("Add truck failed", err);
     } finally {

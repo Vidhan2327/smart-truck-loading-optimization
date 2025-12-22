@@ -61,12 +61,13 @@ const shipmentSchema = new mongoose.Schema(
       default: "Pending",
     },
 
-    // ✅ ADD THESE
+   
     paymentStatus: {
       type: String,
       enum: ["Unpaid", "Partial", "Completed"],
       default: "Unpaid",
     },
+    
 
     deliveredAt: {
       type: Date,

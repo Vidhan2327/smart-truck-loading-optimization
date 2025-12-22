@@ -1,18 +1,10 @@
 import axios from "axios";
 
 const API = axios.create({
-  baseURL: "http://localhost:5000/api/auth",
+  baseURL: `${import.meta.env.VITE_API_URL}/api/auth`,
   withCredentials: true,
 });
 
-export const registerUser = (data) => {
-  return API.post("/register", data);
-};
-
-export const loginUser = (data) => {
-  return API.post("/login", data);
-};
-
-export const logoutUser = () => {
-  return API.post("/logout");
-};
+export const registerUser = (data) => API.post("/register", data);
+export const loginUser = (data) => API.post("/login", data);
+export const logoutUser = () => API.post("/logout");

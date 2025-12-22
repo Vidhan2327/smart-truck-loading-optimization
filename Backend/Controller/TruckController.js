@@ -7,6 +7,8 @@ exports.addTruck = async (req, res) => {
     ...req.body,
     dealerId: req.user.id,
     status: "Available",
+    remainingCapacity: req.body.capacity,
+    remainingVolume: req.body.volume,
   });
 
   res.status(201).json(truck);
@@ -28,7 +30,8 @@ exports.getAvailableTrucksForShipment = async (req, res) => {
 
   const trucks = await Truck.find({
     status: "Available",
-    availableFrom: { $lte: new Date() },
+    remainingCapacity: { $gte: Number(req.query.weight) },
+    remainingVolume: { $gte: Number(req.query.volume) },
     routes: {
       $elemMatch: {
         pickupLocation,
@@ -70,19 +73,24 @@ exports.acceptShipmentRequest = async (req, res) => {
     return res.status(400).json({ message: "Truck not found" });
   }
 
+  if (
+    truck.remainingCapacity < shipment.weight ||
+    truck.remainingVolume < shipment.volume
+  ) {
+    return res.status(400).json({
+      message: "Truck capacity or volume exceeded",
+    });
+  }
+
+  truck.remainingCapacity -= shipment.weight;
+  truck.remainingVolume -= shipment.volume;
+
   shipment.status = "In Transit";
   shipment.acceptedTruckId = truck._id;
   shipment.acceptedDealerId = req.user.id;
   await shipment.save();
 
-  truck.status = "En route";
-  truck.currentCity = shipment.destination;
-  truck.tripsCompleted += 1;
-
-  // ✅ availability after ~30 minutes (ONLY CHANGE)
-  truck.availableFrom = new Date(
-    Date.now() + 30 * 60 * 1000 // 30 minutes
-  );
+  truck.availableFrom = new Date(Date.now() + 15 * 60 * 1000);
 
   await truck.save();
 

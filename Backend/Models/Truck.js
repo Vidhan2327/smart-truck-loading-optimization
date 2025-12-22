@@ -32,6 +32,13 @@ const truckSchema = new mongoose.Schema(
       type: Number, // m³
       required: true,
     },
+    remainingCapacity: {
+      type: Number,
+    },
+
+    remainingVolume: {
+      type: Number,
+    },
 
     driverType: {
       type: String,

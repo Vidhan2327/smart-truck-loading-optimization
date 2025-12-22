@@ -109,7 +109,6 @@ const WarehouseDashboard = () => {
       expectedDeliveryDate,
     } = formData;
 
-    // Validation: all fields
     if (
       !pickupLocation ||
       !destination ||
@@ -125,7 +124,6 @@ const WarehouseDashboard = () => {
       return;
     }
 
-    // Validation: pickup & destination different
     if (pickupLocation === destination) {
       toast.warning("Pickup and destination must be different");
       return;
@@ -140,7 +138,6 @@ const WarehouseDashboard = () => {
 
       fetchShipments();
 
-      // Reset form
       setFormData({
         pickupLocation: "",
         destination: "",
@@ -159,11 +156,17 @@ const WarehouseDashboard = () => {
   };
 
   const handleFetchTrucks = async (s) => {
-    const res = await getAvailableTrucks(
-      s.pickupLocation,
-      s.destination
-    );
-    setAvailableTrucks({ ...availableTrucks, [s._id]: res.data });
+  const res = await getAvailableTrucks(
+  s.pickupLocation,
+  s.destination,
+  s.weight,
+  s.volume
+);
+
+
+    setAvailableTrucks({
+      [s._id]: res.data,
+    });
   };
 
   const handleSendRequest = async (shipmentId) => {
@@ -174,7 +177,6 @@ const WarehouseDashboard = () => {
     fetchShipments();
   };
 
-
   const handlePayInvoice = async (shipmentId) => {
     await payInvoice({ shipmentId });
     fetchShipments();
@@ -184,8 +186,6 @@ const WarehouseDashboard = () => {
     <>
       <div className="min-h-screen w-full bg-gradient-to-br from-orange-100 via-yellow-50 to-orange-50">
         <div className="p-6 max-w-6xl mx-auto">
-
-          {/* Header */}
           <div className="flex justify-between items-center mb-10">
             <h1 className="text-3xl font-extrabold text-orange-700">
               Warehouse Dashboard
@@ -203,7 +203,6 @@ const WarehouseDashboard = () => {
             </button>
           </div>
 
-          {/* Shipment Form (Always Visible) */}
           <div className="bg-white/90 backdrop-blur p-6 rounded-2xl mb-10 shadow-xl border border-orange-100">
             <h2 className="text-xl font-semibold mb-6 text-orange-700">
               New Shipment
@@ -322,7 +321,6 @@ const WarehouseDashboard = () => {
             </button>
           </div>
 
-          {/* My Shipments */}
           <h2 className="text-2xl font-bold mb-6 text-orange-700">
             My Shipments
           </h2>
@@ -334,19 +332,19 @@ const WarehouseDashboard = () => {
     shadow-lg border border-orange-100
     hover:shadow-xl transition"
             >
-              {/* Header */}
               <div className="flex justify-between items-center mb-4">
                 <h3 className="text-lg font-bold text-gray-800">
                   {s.pickupLocation} → {s.destination}
                 </h3>
 
                 <span
-                  className={`text-sm font-semibold px-4 py-1 rounded-full ${s.status === "Pending"
-                    ? "bg-orange-100 text-orange-700"
-                    : s.status === "In Transit"
+                  className={`text-sm font-semibold px-4 py-1 rounded-full ${
+                    s.status === "Pending"
+                      ? "bg-orange-100 text-orange-700"
+                      : s.status === "In Transit"
                       ? "bg-yellow-100 text-yellow-700"
                       : "bg-green-100 text-green-700"
-                    }`}
+                  }`}
                 >
                   {s.status}
                 </span>
@@ -360,16 +358,12 @@ const WarehouseDashboard = () => {
                 <p>
                   <span className="font-medium">Volume:</span> {s.volume} m³
                 </p>
-                {/* <p>
-                  <span className="font-medium">Expected Delivery Date:</span>{" "}
-                  {s.expectedDeliveryDate}
-                </p> */}
+
                 <p>
                   <span className="font-medium">Sender:</span> {s.senderName}
                 </p>
               </div>
 
-              {/* Pending State */}
               {s.status === "Pending" && (
                 <>
                   <button
@@ -411,55 +405,51 @@ const WarehouseDashboard = () => {
                 </>
               )}
 
-              {/* In Transit State */}
-              {s.status === "In Transit" && (() => {
-                const totalAmount = getRoutePrice(
-                  s.pickupLocation,
-                  s.destination
-                );
+              {s.status === "In Transit" &&
+                (() => {
+                  const totalAmount = getRoutePrice(
+                    s.pickupLocation,
+                    s.destination
+                  );
 
-                const paidAmount =
-                  s.paymentStatus === "Paid"
-                    ? totalAmount
-                    : totalAmount / 2;
+                  const paidAmount =
+                    s.paymentStatus === "Paid" ? totalAmount : totalAmount / 2;
 
-                return (
-                  <div className="mt-4 bg-orange-50 border border-orange-100 p-4 rounded-xl">
-                    <p className="font-semibold mb-1">Invoice</p>
+                  return (
+                    <div className="mt-4 bg-orange-50 border border-orange-100 p-4 rounded-xl">
+                      <p className="font-semibold mb-1">Invoice</p>
 
-                    <p>Total Amount: <b>₹{totalAmount}</b></p>
-                    <p>Pay :<b>₹{paidAmount}</b></p>
-                    <p>Status: {s.paymentStatus}</p>
+                      <p>
+                        Total Amount: <b>₹{totalAmount}</b>
+                      </p>
+                      <p>
+                        Pay :<b>₹{paidAmount}</b>
+                      </p>
+                      <p>Status: {s.paymentStatus}</p>
 
-                    {s.paymentStatus === "Unpaid" && (
-                      <button
-                        onClick={() => handlePayInvoice(s._id)}
-                        className="mt-3 bg-orange-500 hover:bg-orange-600
+                      {s.paymentStatus === "Unpaid" && (
+                        <button
+                          onClick={() => handlePayInvoice(s._id)}
+                          className="mt-3 bg-orange-500 hover:bg-orange-600
           text-white px-4 py-2 rounded-lg transition"
-                      >
-                        Pay ₹{totalAmount / 2}
-                      </button>
-                    )}
-                  </div>
-                );
-              })()}
+                        >
+                          Pay ₹{totalAmount / 2}
+                        </button>
+                      )}
+                    </div>
+                  );
+                })()}
 
-
-              {/* Delivered State */}
               {s.status === "Delivered" && (
                 <p className="mt-3 text-green-600 font-semibold">
                   ✅ Shipment Delivered & Payment Completed
                 </p>
               )}
-
             </div>
-
-
           ))}
         </div>
       </div>
     </>
-
   );
 };
 
